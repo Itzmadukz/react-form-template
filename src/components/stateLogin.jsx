@@ -6,17 +6,36 @@ export default function Login() {
     password: ''
   })
 
+  const [didEdit, setDidEdit] = useState({
+    email: false,
+    password: false
+  })
+
+  const emailIsInvalid =
+    didEdit.email && !enteredValues.email.includes('@')
+
   function handleInputChange(identifier, value) {
     setEnteredValues((prevValues) => ({
       ...prevValues,
       [identifier]: value,
     }));
+    setDidEdit(prev => ({
+      ...prev,
+      [identifier]: false
+    }))
   }
 
   function handleLogin(e) {
     e.preventDefault()
     console.log("submitted")
     console.log('values:', enteredValues)
+  }
+
+  function handleInputBlur(identifier) {
+    setDidEdit(prev => ({
+      ...prev,
+      [identifier]: true
+    }))
   }
 
   return (
@@ -30,10 +49,12 @@ export default function Login() {
             id="email"
             type="email"
             name="email"
+            onBlur={() => handleInputBlur('email')}
             onChange={(event) => handleInputChange('email', event.target.value)}
             value={enteredValues.email}
           />
         </div>
+        <div className="contol-error">{emailIsInvalid && <p>enter a valid email</p>}</div>
 
         <div className="control no-margin">
           <label htmlFor="password">Password</label>
